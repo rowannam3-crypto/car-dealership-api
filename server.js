@@ -2,8 +2,6 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
 // allow all cross origin
 app.use(cors());
@@ -23,7 +21,7 @@ const cars = [
   { id: 3, make: "Tesla", model: "Model 3", year: 2022, price: 38000, available: false }
 ];
 
-// GET cars
+// GET all cars
 app.get("/cars", (req, res) => {
   res.json(cars);
 });
@@ -35,20 +33,27 @@ app.get("/cars/:id", (req, res) => {
   res.json(car);
 });
 
-// POST lead
+// Submit a lead
 app.post("/lead", (req, res) => {
   const { name, phone, interest } = req.body;
-  if (!name || !phone)
+
+  if (!name || !phone) {
     return res.status(400).json({ error: "Missing name or phone" });
-  
-  res.json({ message: "Lead submitted", lead: { name, phone, interest } });
+  }
+
+  res.json({
+    message: "Lead submitted successfully",
+    lead: { name, phone, interest }
+  });
 });
 
-// POST test drive
+// Schedule test drive
 app.post("/testdrive", (req, res) => {
   const { name, phone, carId, date } = req.body;
-  if (!name || !phone || !carId || !date)
+
+  if (!name || !phone || !carId || !date) {
     return res.status(400).json({ error: "Missing required fields" });
+  }
 
   res.json({
     message: "Test drive scheduled",
@@ -56,11 +61,13 @@ app.post("/testdrive", (req, res) => {
   });
 });
 
-// POST service
+// Service appointment
 app.post("/service", (req, res) => {
   const { name, phone, reason, date } = req.body;
-  if (!name || !phone || !reason || !date)
+
+  if (!name || !phone || !reason || !date) {
     return res.status(400).json({ error: "Missing required fields" });
+  }
 
   res.json({
     message: "Service appointment created",
@@ -68,14 +75,7 @@ app.post("/service", (req, res) => {
   });
 });
 
-// GET hours
+// Hours
 app.get("/hours", (req, res) => {
-  res.json({
-    sales: "9 AM to 8 PM",
-    service: "7 AM to 6 PM",
-    parts: "8 AM to 5 PM"
-  });
-});
+  re
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("API running on port " + PORT));
