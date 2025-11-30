@@ -77,5 +77,14 @@ app.post("/service", (req, res) => {
 
 // Hours
 app.get("/hours", (req, res) => {
-  re
+  res.json({
+    sales: "9 AM to 8 PM",
+    service: "7 AM to 6 PM",
+    parts: "8 AM to 5 PM"
+  });
+});
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("API running on port " + PORT);
+});
