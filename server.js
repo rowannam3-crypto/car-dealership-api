@@ -1,7 +1,18 @@
 import express from "express";
+import cors from "cors";
 
 const app = express();
+
+// allow all cross origin
+app.use(cors());
+
+// allow json body
 app.use(express.json());
+
+// ROUTES
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 
 // Fake inventory database
 const cars = [
@@ -10,41 +21,32 @@ const cars = [
   { id: 3, make: "Tesla", model: "Model 3", year: 2022, price: 38000, available: false }
 ];
 
-// 1. getCars
+// GET cars
 app.get("/cars", (req, res) => {
   res.json(cars);
 });
 
-// 2. getCarById
+// GET car by ID
 app.get("/cars/:id", (req, res) => {
   const car = cars.find(c => c.id === parseInt(req.params.id));
-  if (!car) {
-    return res.status(404).json({ error: "Car not found" });
-  }
+  if (!car) return res.status(404).json({ error: "Car not found" });
   res.json(car);
 });
 
-// 3. submitLead
+// POST lead
 app.post("/lead", (req, res) => {
   const { name, phone, interest } = req.body;
-
-  if (!name || !phone) {
+  if (!name || !phone)
     return res.status(400).json({ error: "Missing name or phone" });
-  }
-
-  res.json({
-    message: "Lead submitted successfully",
-    lead: { name, phone, interest }
-  });
+  
+  res.json({ message: "Lead submitted", lead: { name, phone, interest } });
 });
 
-// 4. scheduleTestDrive
+// POST test drive
 app.post("/testdrive", (req, res) => {
   const { name, phone, carId, date } = req.body;
-
-  if (!name || !phone || !carId || !date) {
+  if (!name || !phone || !carId || !date)
     return res.status(400).json({ error: "Missing required fields" });
-  }
 
   res.json({
     message: "Test drive scheduled",
@@ -52,13 +54,11 @@ app.post("/testdrive", (req, res) => {
   });
 });
 
-// 5. serviceAppointment
+// POST service
 app.post("/service", (req, res) => {
   const { name, phone, reason, date } = req.body;
-
-  if (!name || !phone || !reason || !date) {
+  if (!name || !phone || !reason || !date)
     return res.status(400).json({ error: "Missing required fields" });
-  }
 
   res.json({
     message: "Service appointment created",
@@ -66,7 +66,7 @@ app.post("/service", (req, res) => {
   });
 });
 
-// 6. hours
+// GET hours
 app.get("/hours", (req, res) => {
   res.json({
     sales: "9 AM to 8 PM",
@@ -76,6 +76,4 @@ app.get("/hours", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("API running on port " + PORT);
-});
+app.listen(PORT, () => console.log("API running on port " + PORT));
